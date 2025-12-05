@@ -61,108 +61,112 @@ export default function DashboardPage() {
     return (
         <ProtectedRoute>
             <DashboardLayout>
-                {/* Header Actions */}
-                <div className="flex items-center justify-between mb-6">
-                    <div>
-                        <h1 className="text-2xl font-bold text-foreground">
-                            Dashboard Analytics
-                        </h1>
-                        <p className="text-sm text-muted-foreground mt-1">
-                            Monitor performa bisnis Anda secara real-time
-                        </p>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                        {/* Period Selector */}
-                        <div className="flex items-center gap-2 bg-secondary rounded-lg p-1 border border-border">
-                            <button
-                                onClick={() => setPeriod('today')}
-                                className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${period === 'today'
-                                    ? 'bg-primary text-primary-foreground'
-                                    : 'text-muted-foreground hover:text-foreground'
-                                    }`}
-                            >
-                                Hari Ini
-                            </button>
-                            <button
-                                onClick={() => setPeriod('week')}
-                                className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${period === 'week'
-                                    ? 'bg-primary text-primary-foreground'
-                                    : 'text-muted-foreground hover:text-foreground'
-                                    }`}
-                            >
-                                Minggu Ini
-                            </button>
-                            <button
-                                onClick={() => setPeriod('month')}
-                                className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${period === 'month'
-                                    ? 'bg-primary text-primary-foreground'
-                                    : 'text-muted-foreground hover:text-foreground'
-                                    }`}
-                            >
-                                Bulan Ini
-                            </button>
+                <div className="h-full flex flex-col overflow-hidden">
+                    {/* Header Actions */}
+                    <div className="flex items-center justify-between mb-4 flex-shrink-0">
+                        <div>
+                            <h1 className="text-2xl font-bold text-foreground">
+                                Dashboard Analytics
+                            </h1>
+                            <p className="text-sm text-muted-foreground mt-1">
+                                Monitor performa bisnis Anda secara real-time
+                            </p>
                         </div>
 
-                        {/* Refresh Button */}
-                        <button
-                            onClick={() => setRefreshKey(prev => prev + 1)}
-                            className="btn btn-secondary flex items-center gap-2 whitespace-nowrap"
-                            disabled={isLoading}
-                        >
-                            <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
-                            <span>Refresh</span>
-                        </button>
+                        <div className="flex items-center gap-3">
+                            {/* Period Selector */}
+                            <div className="flex items-center gap-2 bg-secondary rounded-lg p-1 border border-border">
+                                <button
+                                    onClick={() => setPeriod('today')}
+                                    className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${period === 'today'
+                                        ? 'bg-primary text-primary-foreground'
+                                        : 'text-muted-foreground hover:text-foreground'
+                                        }`}
+                                >
+                                    Hari Ini
+                                </button>
+                                <button
+                                    onClick={() => setPeriod('week')}
+                                    className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${period === 'week'
+                                        ? 'bg-primary text-primary-foreground'
+                                        : 'text-muted-foreground hover:text-foreground'
+                                        }`}
+                                >
+                                    Minggu Ini
+                                </button>
+                                <button
+                                    onClick={() => setPeriod('month')}
+                                    className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${period === 'month'
+                                        ? 'bg-primary text-primary-foreground'
+                                        : 'text-muted-foreground hover:text-foreground'
+                                        }`}
+                                >
+                                    Bulan Ini
+                                </button>
+                            </div>
+
+                            {/* Refresh Button */}
+                            <button
+                                onClick={() => setRefreshKey(prev => prev + 1)}
+                                className="btn btn-secondary flex items-center gap-2 whitespace-nowrap"
+                                disabled={isLoading}
+                            >
+                                <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+                                <span>Refresh</span>
+                            </button>
+                        </div>
                     </div>
+
+                    {/* Dashboard Carousel - Compact Version */}
+                    <div className="flex-1 min-h-0 overflow-hidden">
+                        <DashboardCarousel>
+                            {/* Slide 1: Key Metrics */}
+                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                                <ProfitLossCard data={profitLoss} loading={isLoading} />
+                                <div className="lg:col-span-2">
+                                    <SalesTrendChart data={salesTrend} loading={isLoading} />
+                                </div>
+                            </div>
+
+                            {/* Slide 2: Best Sellers & Transactions */}
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                <BestSellerWidget data={bestSellers} loading={isLoading} />
+                                <TransactionHistory transactions={transactions} loading={isLoading} />
+                            </div>
+
+                            {/* Slide 3: Accounts & Recommendations */}
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                <AccountsTracker
+                                    receivables={receivables}
+                                    payables={payables}
+                                    loading={isLoading}
+                                />
+                                <PriceRecommendation data={priceRecommendations} loading={isLoading} />
+                            </div>
+
+                            {/* Slide 4: Purchase & Stock */}
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                <PurchaseRecommendation data={purchaseRecommendations} loading={isLoading} />
+                                <ProductStockOverview products={products} loading={isLoading} />
+                            </div>
+                        </DashboardCarousel>
+                    </div>
+
+                    {/* Empty State */}
+                    {!isLoading && transactions.length === 0 && products.length === 0 && (
+                        <div className="mt-12 text-center">
+                            <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/20 rounded-full mb-4">
+                                <Calendar className="w-8 h-8 text-primary" />
+                            </div>
+                            <h3 className="text-lg font-semibold text-foreground mb-2">
+                                Belum Ada Data
+                            </h3>
+                            <p className="text-muted-foreground max-w-md mx-auto">
+                                Mulai tambahkan transaksi dan produk untuk melihat analytics dan insights bisnis Anda.
+                            </p>
+                        </div>
+                    )}
                 </div>
-
-                {/* Dashboard Carousel - Compact Version */}
-                <DashboardCarousel>
-                    {/* Slide 1: Key Metrics */}
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <ProfitLossCard data={profitLoss} loading={isLoading} />
-                        <div className="lg:col-span-2">
-                            <SalesTrendChart data={salesTrend} loading={isLoading} />
-                        </div>
-                    </div>
-
-                    {/* Slide 2: Best Sellers & Transactions */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <BestSellerWidget data={bestSellers} loading={isLoading} />
-                        <TransactionHistory transactions={transactions} loading={isLoading} />
-                    </div>
-
-                    {/* Slide 3: Accounts & Recommendations */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <AccountsTracker
-                            receivables={receivables}
-                            payables={payables}
-                            loading={isLoading}
-                        />
-                        <PriceRecommendation data={priceRecommendations} loading={isLoading} />
-                    </div>
-
-                    {/* Slide 4: Purchase & Stock */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <PurchaseRecommendation data={purchaseRecommendations} loading={isLoading} />
-                        <ProductStockOverview products={products} loading={isLoading} />
-                    </div>
-                </DashboardCarousel>
-
-                {/* Empty State */}
-                {!isLoading && transactions.length === 0 && products.length === 0 && (
-                    <div className="mt-12 text-center">
-                        <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/20 rounded-full mb-4">
-                            <Calendar className="w-8 h-8 text-primary" />
-                        </div>
-                        <h3 className="text-lg font-semibold text-foreground mb-2">
-                            Belum Ada Data
-                        </h3>
-                        <p className="text-muted-foreground max-w-md mx-auto">
-                            Mulai tambahkan transaksi dan produk untuk melihat analytics dan insights bisnis Anda.
-                        </p>
-                    </div>
-                )}
             </DashboardLayout>
         </ProtectedRoute>
     );

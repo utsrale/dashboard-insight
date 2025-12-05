@@ -58,6 +58,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
                         <button
                             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
                             className="p-2 rounded-lg hover:bg-secondary transition-colors"
+                            title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
                         >
                             {theme === 'dark' ? (
                                 <Sun className="w-6 h-6 text-muted-foreground" />

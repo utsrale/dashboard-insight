@@ -21,6 +21,13 @@ export default function LoginPage() {
         setError('');
 
         try {
+            // Validate email and password are not empty
+            if (!email || !password) {
+                setError('Email dan password harus diisi');
+                setLoading(false);
+                return;
+            }
+
             if (isLogin) {
                 // Login - Check credentials from localStorage
                 const storedUsers = JSON.parse(localStorage.getItem('dashboard_users') || '[]');
@@ -112,37 +119,37 @@ export default function LoginPage() {
 
         // Set current user session
         localStorage.setItem('current_user', JSON.stringify(demoUser));
-        
+
         // Redirect to dashboard
         router.push('/dashboard');
     };
 
     return (
-        <div className="min-h-screen bg-[#0B1120] flex items-center justify-center p-4">
+        <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
             <div className="w-full max-w-md">
                 {/* Header */}
                 <div className="text-center mb-8">
                     <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-600 to-fuchsia-600 rounded-2xl shadow-lg shadow-purple-500/30 mx-auto mb-4">
                         <TrendingUp className="w-8 h-8 text-white" />
                     </div>
-                    <h1 className="text-3xl font-bold text-white mb-2">
+                    <h1 className="text-3xl font-bold text-slate-900 mb-2">
                         Dashboard Insight
                     </h1>
-                    <p className="text-slate-400">
+                    <p className="text-slate-600">
                         Kelola bisnis UMKM Anda dengan mudah
                     </p>
                 </div>
 
                 {/* Demo Info Card */}
-                <div className="card p-4 mb-6 border-l-4 border-purple-500">
-                    <p className="text-sm text-slate-300 font-medium mb-2">🎯 Demo Mode</p>
-                    <div className="space-y-1 text-sm text-slate-400">
+                <div className="card p-4 mb-6 border-l-4 border-purple-500 bg-white">
+                    <p className="text-sm text-slate-700 font-medium mb-2">🎯 Demo Mode</p>
+                    <div className="space-y-1 text-sm text-slate-600">
                         <p>Klik tombol di bawah untuk coba dengan data sample</p>
                     </div>
                     <button
                         onClick={handleDemoLogin}
                         type="button"
-                        className="mt-3 w-full text-sm bg-purple-500/20 text-purple-300 px-3 py-2 rounded-lg hover:bg-purple-500/30 transition-colors border border-purple-500/30"
+                        className="mt-3 w-full text-sm bg-purple-600 text-white px-3 py-2 rounded-lg hover:bg-purple-700 transition-colors shadow-sm"
                     >
                         Coba Demo (10 Produk & 50+ Transaksi)
                     </button>

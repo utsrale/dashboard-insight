@@ -124,6 +124,28 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
         setTransactions(updatedTransactions);
         saveToStorage(user.uid, 'TRANSACTIONS', updatedTransactions);
 
+        // **NEW: Automatically reduce product stock**
+        // Find the product by name and reduce stock
+        const productIndex = products.findIndex(p => p.name === transactionData.product);
+        if (productIndex !== -1) {
+            const updatedProducts = [...products];
+            const product = updatedProducts[productIndex];
+
+            // Reduce current stock by transaction quantity
+            const newStock = (product.currentStock || 0) - transactionData.quantity;
+
+            updatedProducts[productIndex] = {
+                ...product,
+                currentStock: Math.max(0, newStock), // Ensure stock doesn't go negative
+                updatedAt: new Date()
+            };
+
+            setProducts(updatedProducts);
+            saveToStorage(user.uid, 'PRODUCTS', updatedProducts);
+
+            console.log(`[DashboardContext] Stock reduced: ${product.name} (${product.currentStock} → ${newStock})`);
+        }
+
         console.log('[DashboardContext] Transaction added:', newTransaction.id);
         return newTransaction.id;
     };
